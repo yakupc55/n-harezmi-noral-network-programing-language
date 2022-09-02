@@ -1,0 +1,28 @@
+
+body{
+    background-color:azure;
+    max-width: 1366px;
+    margin: auto;
+}
+.nav{
+    background-color: aquamarine;
+    height: 40px;
+}
+.container{
+    background-color:cornflowerblue;
+    display:flex;
+}
+.network{
+    background-color:blue;
+    width: 900px;
+    height: 600px;
+}
+.system{
+    background-color:brown;
+    width: 466px;
+    height: 600px;
+}
+.footer{
+    background-color: aquamarine;
+    height: 40px;
+}
