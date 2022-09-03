@@ -10,6 +10,7 @@ var startNetworkY=centerY;
 var networkSize=2;
 var networkListSize=(networkSize*2)+1;
 var networkList=[];
+var networkSimpleList=[];
 var NoronSize=0;
 
 var distanceX = 160;
@@ -22,6 +23,19 @@ function createNetwork(){
     drawNetworkCircles();
     giveIndexs();
     givePathsToNorons();
+    convertToOneList();
+}
+
+function convertToOneList(){
+    networkSimpleList=[];
+    for (let i = 0; i < networkList.length; i++) {
+        for (let j = 0; j < networkList[i].length; j++) {
+            networkSimpleList.push(networkList[i][j]);
+        }
+    }
+    console.log("convert to one list");
+    console.log("networkSimpleList");
+    console.log(networkSimpleList);
 }
 
 function calculateCirclesCordinates()
@@ -42,7 +56,7 @@ function calculateCirclesCordinates()
 }
 
 function isExistInIndex(i,j){
-    console.log("i : "+i+" j : "+j);
+    // console.log("i : "+i+" j : "+j);
     if(typeof networkList[i] === 'undefined') {
         return false;
     }
@@ -67,25 +81,61 @@ function giveIndexs(){
     // console.log(networkList);
 }
 
+function addPathstoByLength(i,j,currentJ,add){
+    if(isExistInIndex(i+add,currentJ)){
+        networkList[i][j].paths.push(networkList[i+add][currentJ].index);
+    }
+    if(isExistInIndex(i+add,currentJ+1)){
+        networkList[i][j].paths.push(networkList[i+add][currentJ+1].index);
+    }
+}
+
+function addPathstoNoronByRow(i,j,add){
+    var currentRowLength=networkList[i].length;
+    var secondRowLength=networkList[i+add].length;
+    
+    var currentJ = (currentRowLength>secondRowLength)? j-1 : j;
+    
+    addPathstoByLength(i,j,currentJ,add);
+}
+
 function addPathstoANoron(i,j){
-    //before control
+    // var counter=0;
+    //check previous row
     if(isExistInIndex(i-1,0))
     {
-        console.log("it has a previous value");
+        // console.log("it has a previous row value");
+        addPathstoNoronByRow(i,j,-1)
     }
-    // later control
+    //check next row 
     if(isExistInIndex(i+1,0)){
-        console.log("it has a next value");
+        // console.log("it has a next row value");
+        addPathstoNoronByRow(i,j,+1)
+    }
+
+    //check previous index
+    if(isExistInIndex(i,j-1))
+    {
+        networkList[i][j].paths.push(networkList[i][j-1].index);
+        //  console.log("it has a previous value");
+    }
+    //check next index
+    if(isExistInIndex(i,j+1)){
+        networkList[i][j].paths.push(networkList[i][j+1].index);
+        // console.log("it has a next value");
     }
 }
 
 function givePathsToNorons(){
+    console.log("give paths to noron");
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
             networkList[i][j].paths= [];
             addPathstoANoron(i,j);
         }
     }
+    console.log("networkList");
+    console.log(networkList);
 }
 
 function drawNetworkCircles(){
@@ -119,8 +169,8 @@ while(sizeCounter>0){
 }
 networkList[networkListSize-1]=([{x:startNetworkX,y:startNetworkY}]);
 
-console.log("networkList");
-console.log(networkList);
+// console.log("networkList");
+// console.log(networkList);
 }
 
 function ciz() {
