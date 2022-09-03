@@ -20,10 +20,24 @@ var circleSize = 60;
 function createNetwork(){
     createNetworkFirstList();
     calculateCirclesCordinates();
-    drawNetworkCircles();
     giveIndexs();
     givePathsToNorons();
     convertToOneList();
+    drawPathLines();
+    drawNetworkCircles();
+}
+
+function drawPathLines() {
+    ctx.beginPath();
+    var lineToindex=0; 
+    for (let i = 0; i < networkSimpleList.length; i++) {
+        for (let p = 0; p < networkSimpleList[i].paths.length; p++) {
+            ctx.moveTo(networkSimpleList[i].x,networkSimpleList[i].y);
+            lineToindex = networkSimpleList[i].paths[p];
+            ctx.lineTo(networkSimpleList[lineToindex].x,networkSimpleList[lineToindex].y);
+        }
+    }
+    ctx.stroke();
 }
 
 function convertToOneList(){
@@ -143,6 +157,8 @@ function drawNetworkCircles(){
         for (let x = 0; x < networkList[y].length; x++) {
             ctx.beginPath();
             ctx.arc(networkList[y][x].x, networkList[y][x].y, circleSize, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
             ctx.stroke();
         }
     }
