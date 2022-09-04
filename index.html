@@ -8,9 +8,24 @@
     <title>Noral Network Programing language</title>
 </head>
 <body>
-    <div class="nav">
-        test
+
+    <div class="nav-all">
+        <div class="nav">
+            test
+        </div>
+        <div  class="nav-settings">
+            Language:
+            <select name="language" id="language">
+                <option value="language1">Language1</option>
+            </select>
+            <br />
+            Example:
+            <select name="example" id="example">
+                <option value="example1">Example 1</option>
+            </select>
+        </div>
     </div>
+
     <div class="container">
         <div class="network">
             <canvas id="myCanvas" width="898" height="598" style="border:1px solid #000000;">
@@ -18,6 +33,8 @@
         </div>
         <div class="system">
             <button onclick="ciz()">çiz</button>
+            <br/>
+            <textarea name="codes" id="codes" cols="30" rows="10"></textarea>
         </div>
     </div>
     <div class="footer">

@@ -4,9 +4,23 @@ body{
     max-width: 1366px;
     margin: auto;
 }
+.nav-all{
+    display:flex;
+}
 .nav{
     background-color: aquamarine;
     height: 40px;
+    width: 1100px;
+}
+.nav-settings{
+    background-color: rgb(160, 241, 9);
+    width: 266px;
+    height: 40px;
+
+    text-align: center;
+    justify-content:center;
+    place-items: center;
+    align-content:center;
 }
 .container{
     background-color:cornflowerblue;
