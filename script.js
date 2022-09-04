@@ -8,6 +8,7 @@ var centerY=alanH/2;
 var startNetworkX=120;
 var startNetworkY=centerY;
 var networkSize=2;
+var dataSize=5;
 var networkListSize=(networkSize*2)+1;
 var networkList=[];
 var networkSimpleList=[];
@@ -25,6 +26,32 @@ function createNetwork(){
     convertToOneList();
     drawPathLines();
     drawNetworkCircles();
+    createEmptyDataSet();
+    drawDataSetinNoron();
+}
+
+function createEmptyDataSet() {
+    for (let i = 0; i < networkSimpleList.length; i++) {
+        networkSimpleList[i].dataSet=[0,0,0,0,0];
+    }
+    // console.log("create Empty Data Set :");
+    // console.log("networkSimpleList");
+    // console.log(networkSimpleList);
+}
+
+function drawDataSetinNoron(){
+    var fontSize=circleSize/4;
+    var fontSpace=4;
+    var startX=0-(circleSize/2);
+    ctx.fillStyle = 'black';
+
+    ctx.font = 'italic '+fontSize+'pt Calibri';
+    for (let i = 0; i < networkSimpleList.length; i++) {
+        
+        for (let data = 0; data < dataSize; data++) {
+            ctx.fillText(networkSimpleList[i].dataSet[data], networkSimpleList[i].x+startX, networkSimpleList[i].y+(startX-fontSpace)+(data*(fontSize+fontSpace)));
+        }
+    }
 }
 
 function drawPathLines() {
@@ -47,9 +74,9 @@ function convertToOneList(){
             networkSimpleList.push(networkList[i][j]);
         }
     }
-    console.log("convert to one list");
-    console.log("networkSimpleList");
-    console.log(networkSimpleList);
+    // console.log("convert to one list");
+    // console.log("networkSimpleList");
+    // console.log(networkSimpleList);
 }
 
 function calculateCirclesCordinates()
@@ -141,15 +168,15 @@ function addPathstoANoron(i,j){
 }
 
 function givePathsToNorons(){
-    console.log("give paths to noron");
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
             networkList[i][j].paths= [];
             addPathstoANoron(i,j);
         }
     }
-    console.log("networkList");
-    console.log(networkList);
+    // console.log("give paths to noron");
+    // console.log("networkList");
+    // console.log(networkList);
 }
 
 function drawNetworkCircles(){
