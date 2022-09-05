@@ -20,8 +20,9 @@
             </select>
             <br />
             Example:
-            <select name="example" id="example">
+            <select onchange="onChangeExampleValue()" name="example" id="example">
                 <option value="example1">Example 1</option>
+                <option value="example2">Example 2</option>
             </select>
         </div>
     </div>
@@ -34,7 +35,7 @@
         <div class="system">
             <button onclick="ciz()">çiz</button>
             <br/>
-            <textarea name="codes" id="codes" cols="30" rows="10"></textarea>
+            <textarea disabled name="codes" id="codes" cols="50" rows="20"></textarea>
         </div>
     </div>
     <div class="footer">

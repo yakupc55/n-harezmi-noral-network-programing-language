@@ -1,3 +1,4 @@
+
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var alanW=c.width;
@@ -18,7 +19,19 @@ var distanceX = 160;
 var distanceY = 160;
 var circleSize = 60;
 
+window.onload = function(e){
+    getTextDataFromUrlToTextarea("example1.lang","codes");
+}
+
+function onChangeExampleValue() {
+    var selectedExample = document.getElementById("example").value;
+    console.log(selectedExample);
+    getTextDataFromUrlToTextarea(selectedExample+".lang","codes");
+    //alert(d);
+}
+
 function createNetwork(){
+    codeTest();
     createNetworkFirstList();
     calculateCirclesCordinates();
     giveIndexs();
@@ -28,6 +41,26 @@ function createNetwork(){
     drawNetworkCircles();
     createEmptyDataSet();
     drawDataSetinNoron();
+}
+
+//for testing some codes
+function codeTest(){
+    console.log("code test is running");
+}
+
+function getTextDataFromUrlToTextarea(fileUrl,TextareaId){
+    var request = new XMLHttpRequest();
+    request.open('GET', fileUrl, true);
+    request.responseType = 'blob';
+    request.onload = function() {
+        var reader = new FileReader();
+        reader.readAsText(request.response);
+        reader.onload =  function(e){
+            var textArea = document.getElementById(TextareaId);
+            textArea.value = e.target.result;
+        };
+    };
+    request.send();
 }
 
 function createEmptyDataSet() {
