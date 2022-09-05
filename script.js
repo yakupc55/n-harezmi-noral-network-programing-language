@@ -1,30 +1,33 @@
 
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-var alanW=c.width;
-var alanH=c.height;
+let c = document.getElementById("myCanvas");
+let ctx = c.getContext("2d");
+let alanW=c.width;
+let alanH=c.height;
 
-var centerX=alanW/2;
-var centerY=alanH/2;
-var startNetworkX=120;
-var startNetworkY=centerY;
-var networkSize=2;
-var dataSize=5;
-var networkListSize=(networkSize*2)+1;
-var networkList=[];
-var networkSimpleList=[];
-var NoronSize=0;
+let centerX=alanW/2;
+let centerY=alanH/2;
+let startNetworkX=120;
+let startNetworkY=centerY;
+let networkSize=2;
+let dataSize=5;
+let networkListSize=(networkSize*2)+1;
+let networkList=[];
+let networkSimpleList=[];
+let NoronSize=0;
 
-var distanceX = 160;
-var distanceY = 160;
-var circleSize = 60;
+let distanceX = 160;
+let distanceY = 160;
+let circleSize = 60;
 
+let codeCount=0;
+let codeRowList=[];
+let ExampleName="";
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
 }
 
 function onChangeExampleValue() {
-    var selectedExample = document.getElementById("example").value;
+    let selectedExample = document.getElementById("example").value;
     console.log(selectedExample);
     getTextDataFromUrlToTextarea(selectedExample+".lang","codes");
     //alert(d);
@@ -46,17 +49,40 @@ function createNetwork(){
 //for testing some codes
 function codeTest(){
     console.log("code test is running");
+    parserCodes();
+}
+
+function parserCodes(){
+    splitToCodesToRow();
+    codeCount=0;
+    getExampleName();
+    startCodeReading();
+}
+
+function startCodeReading(){
+    
+}
+
+function getExampleName(){
+    ExampleName=codeRowList[codeCount];
+    codeCount++;
+}
+
+function splitToCodesToRow(){
+   // console.log("split to codes to row");
+    let codeTextarea = document.getElementById("codes");
+    codeRowList = codeTextarea.value.split("\n");
 }
 
 function getTextDataFromUrlToTextarea(fileUrl,TextareaId){
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open('GET', fileUrl, true);
     request.responseType = 'blob';
     request.onload = function() {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(request.response);
         reader.onload =  function(e){
-            var textArea = document.getElementById(TextareaId);
+            let textArea = document.getElementById(TextareaId);
             textArea.value = e.target.result;
         };
     };
@@ -73,9 +99,9 @@ function createEmptyDataSet() {
 }
 
 function drawDataSetinNoron(){
-    var fontSize=circleSize/4;
-    var fontSpace=4;
-    var startX=0-(circleSize/2);
+    let fontSize=circleSize/4;
+    let fontSpace=4;
+    let startX=0-(circleSize/2);
     ctx.fillStyle = 'black';
 
     ctx.font = 'italic '+fontSize+'pt Calibri';
@@ -89,7 +115,7 @@ function drawDataSetinNoron(){
 
 function drawPathLines() {
     ctx.beginPath();
-    var lineToindex=0; 
+    let lineToindex=0; 
     for (let i = 0; i < networkSimpleList.length; i++) {
         for (let p = 0; p < networkSimpleList[i].paths.length; p++) {
             ctx.moveTo(networkSimpleList[i].x,networkSimpleList[i].y);
@@ -143,7 +169,7 @@ function isExistInIndex(i,j){
 
 function giveIndexs(){
     // console.log("give indexs");
-    var counter=0;
+    let counter=0;
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
             networkList[i][j].index=counter;
@@ -165,16 +191,16 @@ function addPathstoByLength(i,j,currentJ,add){
 }
 
 function addPathstoNoronByRow(i,j,add){
-    var currentRowLength=networkList[i].length;
-    var secondRowLength=networkList[i+add].length;
+    let currentRowLength=networkList[i].length;
+    let secondRowLength=networkList[i+add].length;
     
-    var currentJ = (currentRowLength>secondRowLength)? j-1 : j;
+    let currentJ = (currentRowLength>secondRowLength)? j-1 : j;
     
     addPathstoByLength(i,j,currentJ,add);
 }
 
 function addPathstoANoron(i,j){
-    // var counter=0;
+    // let counter=0;
     //check previous row
     if(isExistInIndex(i-1,0))
     {
@@ -227,11 +253,11 @@ function drawNetworkCircles(){
 function createNetworkFirstList(){
 networkList[0]=([{x:startNetworkX,y:startNetworkY}]);
 
-var sizeCounter=networkSize;
-var amountOfNewItems=1;
+let sizeCounter=networkSize;
+let amountOfNewItems=1;
 while(sizeCounter>0){
     amountOfNewItems++;
-    var itemCounter=amountOfNewItems;
+    let itemCounter=amountOfNewItems;
     networkList[amountOfNewItems-1]=[];
     networkList[networkListSize-amountOfNewItems]=[];
     while (itemCounter>0){
