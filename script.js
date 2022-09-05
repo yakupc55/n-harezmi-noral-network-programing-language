@@ -22,6 +22,13 @@ let circleSize = 60;
 let codeCount=0;
 let codeRowList=[];
 let ExampleName="";
+
+let versionNames= ["Langv1"];
+let neuralNetworkTypeNames = ["Minv1"];
+let currentVersion="";
+let currentNeuralNetwork="";
+let tempData="";
+
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
 }
@@ -52,15 +59,99 @@ function codeTest(){
     parserCodes();
 }
 
+function getInformation(){
+    console.log('====================================');
+    console.log("get information page start");
+    console.log('====================================');
+    console.log("lang version : "+currentVersion);
+    console.log("neural network type : "+currentNeuralNetwork);
+    console.log('====================================');
+    console.log("get information page end");
+    console.log('====================================');
+}
+
 function parserCodes(){
-    splitToCodesToRow();
-    codeCount=0;
-    getExampleName();
-    startCodeReading();
+    try {
+        
+        splitToCodesToRow();
+        codeCount=0;
+        getExampleName();
+        startCodeReading();
+
+    } catch (error) {
+        console.log("we have an error");
+        console.log(error);
+    }
+}
+
+function controlList(name,list){
+    // console.log("name : "+name);
+    let isExist=false;
+    for (let index = 0; index < list.length; index++) {
+        if(list[index].toUpperCase()==name.toUpperCase()){
+            tempData=list[index];
+            return true;
+        } 
+    }
+    return isExist;
+}
+
+//ns  next step
+function nsTypeOfMinV1() {
+    console.log("everything is succesfull");
+    //getInformation();
+}
+
+function nsNeuralNetworkType() {
+    switch (currentNeuralNetwork){
+
+        // Minv1
+        case neuralNetworkTypeNames[0]:  nsTypeOfMinV1(); break;
+
+        default: alert("This neural network tyep can't be used with this language version");
+    }
+    //console.log("neural network type : "+currentNeuralNetwork);
+}
+
+function nsLangv1Version(){
+    //get the name of neural network type
+    let type=codeRowList[codeCount];
+     console.log("type : "+type);
+    if(controlList(type,neuralNetworkTypeNames)){
+        codeCount++;
+        currentNeuralNetwork=tempData;
+        nsNeuralNetworkType();
+    }else{
+        let message="you use wrong neural network type";
+        console.log(message);
+        alert(message);
+    }
+}
+
+
+function nsLangVersion() {
+    switch (currentVersion){
+
+        // Langv1
+        case versionNames[0]:  nsLangv1Version(); break;
+
+        default: alert("This version can't be runned");
+    }
+    //console.log("lang version : "+currentVersion);
 }
 
 function startCodeReading(){
-    
+    let name=codeRowList[codeCount];
+    // console.log("name : "+name);
+    if(controlList(name,versionNames)){
+        codeCount++;
+        currentVersion=tempData;
+        nsLangVersion();
+    }else{
+        let message="you use wrong language version";
+        console.log(message);
+        alert(message);
+    } 
 }
 
 function getExampleName(){
@@ -72,6 +163,7 @@ function splitToCodesToRow(){
    // console.log("split to codes to row");
     let codeTextarea = document.getElementById("codes");
     codeRowList = codeTextarea.value.split("\n");
+    console.log(codeRowList);
 }
 
 function getTextDataFromUrlToTextarea(fileUrl,TextareaId){
