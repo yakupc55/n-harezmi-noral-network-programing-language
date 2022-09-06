@@ -14,7 +14,7 @@ let maxNetworkSize=6;
 let dataSize=5;
 let networkListSize=(networkSize*2)+1;
 let networkList=[];
-let networkSimpleList=[];
+let networkSimpleList=[]; // one row list
 let NoronSize=0;
 
 let distanceX = 160;
@@ -33,6 +33,7 @@ let tempData="";
 
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
+    firstDraws();
 }
 
 function onChangeExampleValue() {
@@ -41,18 +42,30 @@ function onChangeExampleValue() {
     getTextDataFromUrlToTextarea(selectedExample+".lang","codes");
     //alert(d);
 }
+async function firstDraws(){
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, alanW, alanH);  
+}
 
  async function createNetwork(){
-  await codeTest();
-    createNetworkFirstList();
-    calculateCirclesCordinates();
-    giveIndexs();
-    givePathsToNorons();
-    convertToOneList();
-    drawPathLines();
-    drawNetworkCircles();
-    createEmptyDataSet();
-    drawDataSetinNoron();
+    await codeTest();
+    await firstDraws();
+    await parserCodes();
+}
+
+async function drawNeuralNetwork(){
+    await drawPathLines();
+    await drawNetworkCircles();
+    await drawDataSetinNoron();
+}
+
+async function calculateAndCreateNetwork(){
+    await createNetworkFirstList();
+    await calculateCirclesCordinates();
+    await giveIndexs();
+    await givePathsToNorons();
+    await convertToOneList();
+    await createEmptyDataSet();
 }
 
 function codeTest2(){
@@ -62,8 +75,6 @@ function codeTest2(){
 //for testing some codes
 async function codeTest(){
     console.log("code test is running");
-    parserCodes();
-    
 }
 
 function getInformation(){
@@ -77,10 +88,11 @@ function getInformation(){
     console.log('====================================');
 }
 
-function parserCodes(){
+
+async function parserCodes(){
     try {
         
-        splitToCodesToRow();
+        await splitToCodesToRow();
         codeCount=0;
         getExampleName();
         startCodeReading();
@@ -103,6 +115,27 @@ function controlList(name,list){
     return isExist;
 }
 
+async function updateDateSetFromExample() {
+    let miniParser = [];
+    for (let i = 0; i < networkSimpleList.length; i++) {
+        miniParser = codeRowList[codeCount].split(",");
+        for (let d = 0; d < dataSize; d++) {
+            networkSimpleList[i].dataSet[d] = miniParser[d];
+        }
+        codeCount++;
+    }
+
+    console.log("update date set from example :");
+    console.log("networkSimpleList");
+    console.log(networkSimpleList);
+}
+
+async function snMinV1NetworkProcess(){
+    await calculateAndCreateNetwork();
+    await updateDateSetFromExample();
+    await drawNeuralNetwork();
+}
+
 function snMinV1NetworkSize(size){
     // console.log("before changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
     // console.log("sn min v1 network size size : ");
@@ -110,6 +143,7 @@ function snMinV1NetworkSize(size){
     if(size<=maxNetworkSize && size>=minNetworkSize){
         networkSize=size;
         networkListSize=(size*2)+1;
+        snMinV1NetworkProcess();
         // console.log("later changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
     }
     else{
@@ -185,7 +219,7 @@ function getExampleName(){
     codeCount++;
 }
 
-function splitToCodesToRow(){
+async function splitToCodesToRow(){
    // console.log("split to codes to row");
     let codeTextarea = document.getElementById("codes");
     codeRowList = codeTextarea.value.split("\n");
@@ -207,7 +241,7 @@ function getTextDataFromUrlToTextarea(fileUrl,TextareaId){
     request.send();
 }
 
-function createEmptyDataSet() {
+async function createEmptyDataSet() {
     for (let i = 0; i < networkSimpleList.length; i++) {
         networkSimpleList[i].dataSet=[0,0,0,0,0];
     }
@@ -216,7 +250,7 @@ function createEmptyDataSet() {
     // console.log(networkSimpleList);
 }
 
-function drawDataSetinNoron(){
+async function drawDataSetinNoron(){
     let fontSize=circleSize/4;
     let fontSpace=4;
     let startX=0-(circleSize/2);
@@ -231,7 +265,7 @@ function drawDataSetinNoron(){
     }
 }
 
-function drawPathLines() {
+async function drawPathLines() {
     ctx.beginPath();
     let lineToindex=0; 
     for (let i = 0; i < networkSimpleList.length; i++) {
@@ -244,7 +278,7 @@ function drawPathLines() {
     ctx.stroke();
 }
 
-function convertToOneList(){
+async function convertToOneList(){
     networkSimpleList=[];
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
@@ -256,7 +290,7 @@ function convertToOneList(){
     // console.log(networkSimpleList);
 }
 
-function calculateCirclesCordinates()
+async function calculateCirclesCordinates()
 {
     //console.log("calculateCircle");
     for (let i = 0; i < networkList.length; i++) {
@@ -285,7 +319,7 @@ function isExistInIndex(i,j){
         return true;
 }
 
-function giveIndexs(){
+async function giveIndexs(){
     // console.log("give indexs");
     let counter=0;
     for (let i = 0; i < networkList.length; i++) {
@@ -344,7 +378,7 @@ function addPathstoANoron(i,j){
     }
 }
 
-function givePathsToNorons(){
+async function givePathsToNorons(){
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
             networkList[i][j].paths= [];
@@ -356,7 +390,7 @@ function givePathsToNorons(){
     // console.log(networkList);
 }
 
-function drawNetworkCircles(){
+async function drawNetworkCircles(){
     for (let y = 0; y < networkList.length; y++) {
         for (let x = 0; x < networkList[y].length; x++) {
             ctx.beginPath();
@@ -368,7 +402,7 @@ function drawNetworkCircles(){
     }
 }
 
-function createNetworkFirstList(){
+async function createNetworkFirstList(){
 networkList[0]=([{x:startNetworkX,y:startNetworkY}]);
 
 let sizeCounter=networkSize;
@@ -393,12 +427,3 @@ networkList[networkListSize-1]=([{x:startNetworkX,y:startNetworkY}]);
 // console.log(networkList);
 }
 
-function ciz() {
-// öncelikle tüm alanı temizliyoruz
-ctx.fillStyle = "white";
-ctx.fillRect(0, 0, alanW, alanH);  
-ctx.moveTo(centerX, startNetworkY);
-ctx.lineTo(centerX, startNetworkY+25);
-ctx.stroke();
-createNetwork();
-}
