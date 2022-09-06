@@ -116,6 +116,12 @@ function controlList(name,list){
 }
 
 async function updateDateSetFromExample() {
+    // console.log("update side")
+    // console.log("codeCount : "+codeCount);
+    // console.log("code row list : ");
+    // console.log(codeRowList);
+    // console.log("network simple list : ");
+    // console.log(networkSimpleList);
     let miniParser = [];
     for (let i = 0; i < networkSimpleList.length; i++) {
         miniParser = codeRowList[codeCount].split(",");
@@ -302,7 +308,7 @@ async function calculateCirclesCordinates()
             networkList[i][j].x =startNetworkX+( distanceX * i);
         }
     }
-    
+    // console.log("calculate network list");
     // console.log("networkList");
     // console.log(networkList);
 }
@@ -329,6 +335,7 @@ async function giveIndexs(){
         }
     }
     NoronSize=counter;
+    // console.log("give index");
     // console.log("networkList");
     // console.log(networkList);
 }
@@ -403,6 +410,7 @@ async function drawNetworkCircles(){
 }
 
 async function createNetworkFirstList(){
+networkList=[];
 networkList[0]=([{x:startNetworkX,y:startNetworkY}]);
 
 let sizeCounter=networkSize;
@@ -422,7 +430,7 @@ while(sizeCounter>0){
     sizeCounter--;
 }
 networkList[networkListSize-1]=([{x:startNetworkX,y:startNetworkY}]);
-
+// console.log("create network first list");
 // console.log("networkList");
 // console.log(networkList);
 }
