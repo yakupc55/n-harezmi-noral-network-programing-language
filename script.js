@@ -9,6 +9,8 @@ let centerY=alanH/2;
 let startNetworkX=120;
 let startNetworkY=centerY;
 let networkSize=2;
+let minNetworkSize=2;
+let maxNetworkSize=6;
 let dataSize=5;
 let networkListSize=(networkSize*2)+1;
 let networkList=[];
@@ -40,8 +42,8 @@ function onChangeExampleValue() {
     //alert(d);
 }
 
-function createNetwork(){
-    codeTest();
+ async function createNetwork(){
+  await codeTest();
     createNetworkFirstList();
     calculateCirclesCordinates();
     giveIndexs();
@@ -53,10 +55,15 @@ function createNetwork(){
     drawDataSetinNoron();
 }
 
+function codeTest2(){
+ 
+}
+
 //for testing some codes
-function codeTest(){
+async function codeTest(){
     console.log("code test is running");
     parserCodes();
+    
 }
 
 function getInformation(){
@@ -96,10 +103,29 @@ function controlList(name,list){
     return isExist;
 }
 
+function snMinV1NetworkSize(size){
+    // console.log("before changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
+    // console.log("sn min v1 network size size : ");
+    // console.log(size);
+    if(size<=maxNetworkSize && size>=minNetworkSize){
+        networkSize=size;
+        networkListSize=(size*2)+1;
+        // console.log("later changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
+    }
+    else{
+        alert("size is invalid");
+    }
+}
 //ns  next step
 function nsTypeOfMinV1() {
     console.log("everything is succesfull");
-    //getInformation();
+    let size=codeRowList[codeCount];
+    if(Number.isInteger(parseInt(size))){
+        codeCount++;
+        snMinV1NetworkSize(parseInt(size));
+    }else{
+        alert("Network Size is not integer");
+    }
 }
 
 function nsNeuralNetworkType() {
