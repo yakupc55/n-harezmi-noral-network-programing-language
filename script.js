@@ -17,8 +17,13 @@ let networkListSize=(networkSize*2)+1;
 let networkList=[];
 let networkSimpleList=[]; // one row list
 let NoronSize=0;
+
 let exampleNameAreaRectSizes={x:240,y:60};
 let exampleNameAreaCordinates={x:centerX,y:(exampleNameAreaRectSizes.y/2)};
+
+let currentData=0;
+let currentDataAreaRectSizes={x:120,y:80};
+let currentDataAreaCordinates={x:fieldW-(currentDataAreaRectSizes.x/2),y:(currentDataAreaRectSizes.y/2)};
 
 let distanceX = 160;
 let distanceY = 160;
@@ -67,6 +72,7 @@ async function drawNeuralNetwork(){
     await drawDataSetinNoron();
     await drawInputOutputInformation();
     await drawExampleNameArea();
+    await drawCurrentDataArea();
 }
 
 async function calculateAndCreateNetwork(){
@@ -305,6 +311,33 @@ async function convertToOneList(){
     // console.log("convert to one list");
     // console.log("networkSimpleList");
     // console.log(networkSimpleList);
+}
+
+function calculateRectFromCenterCordinatesObject(cordinates,sizes){
+   return calculateRectFromCenterCordinates(cordinates.x,cordinates.y,sizes.x,sizes.y);
+}
+
+function calculateRectFromCenterCordinates(rectCenterX,rectCenterY,rectWidth,rectHeight){
+    return {x:rectCenterX-(rectWidth/2),y:rectCenterY-(rectHeight/2),w:rectWidth,h:rectHeight}
+}
+
+async function drawCurrentDataArea(){
+    let currentDataFontSize=18;
+    let r = calculateRectFromCenterCordinatesObject(currentDataAreaCordinates,currentDataAreaRectSizes);
+    ctx.beginPath();
+    ctx.rect(r.x,r.y,r.w,r.h); 
+    ctx.fillStyle = '#ddffddaa';
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.font = 'italic '+currentDataFontSize+'pt Calibri';
+    let text="Data";
+    let textWidth=ctx.measureText(text).width;
+    ctx.fillText("Data",currentDataAreaCordinates.x-(textWidth/2),currentDataAreaCordinates.y-currentDataFontSize);
+    ctx.fillText(currentData,currentDataAreaCordinates.x-10,currentDataAreaCordinates.y+5);
+    ctx.stroke();
 }
 
 async function drawExampleNameArea(){
