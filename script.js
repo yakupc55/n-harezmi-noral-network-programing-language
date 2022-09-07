@@ -1,12 +1,13 @@
 
 let c = document.getElementById("myCanvas");
 let ctx = c.getContext("2d");
-let alanW=c.width;
-let alanH=c.height;
+let fieldW=c.width;
+let fieldH=c.height;
 
-let centerX=alanW/2;
-let centerY=alanH/2;
-let startNetworkX=120;
+let centerX=fieldW/2;
+let centerY=fieldH/2;
+let startNetworkX=145;
+let networkWidth=604;
 let startNetworkY=centerY;
 let networkSize=2;
 let minNetworkSize=2;
@@ -16,10 +17,16 @@ let networkListSize=(networkSize*2)+1;
 let networkList=[];
 let networkSimpleList=[]; // one row list
 let NoronSize=0;
+let exampleNameAreaRectSizes={x:240,y:60};
+let exampleNameAreaCordinates={x:centerX,y:(exampleNameAreaRectSizes.y/2)};
 
 let distanceX = 160;
 let distanceY = 160;
 let circleSize = 60;
+
+let iORectSize = 60;
+let inputCordinates = {x:(iORectSize/2),y:centerY};
+let outputCordinates = {x:fieldW-(iORectSize/2),y:centerY};
 
 let codeCount=0;
 let codeRowList=[];
@@ -30,6 +37,7 @@ let neuralNetworkTypeNames = ["Minv1"];
 let currentVersion="";
 let currentNeuralNetwork="";
 let tempData="";
+
 
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
@@ -44,7 +52,7 @@ function onChangeExampleValue() {
 }
 async function firstDraws(){
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, alanW, alanH);  
+    ctx.fillRect(0, 0, fieldW, fieldH);  
 }
 
  async function createNetwork(){
@@ -57,10 +65,13 @@ async function drawNeuralNetwork(){
     await drawPathLines();
     await drawNetworkCircles();
     await drawDataSetinNoron();
+    await drawInputOutputInformation();
+    await drawExampleNameArea();
 }
 
 async function calculateAndCreateNetwork(){
     await createNetworkFirstList();
+    await calculateCordinatesValues();
     await calculateCirclesCordinates();
     await giveIndexs();
     await givePathsToNorons();
@@ -294,6 +305,41 @@ async function convertToOneList(){
     // console.log("convert to one list");
     // console.log("networkSimpleList");
     // console.log(networkSimpleList);
+}
+
+async function drawExampleNameArea(){
+    let exampleNameFontSize=18;
+    ctx.beginPath();
+    ctx.rect(exampleNameAreaCordinates.x-(exampleNameAreaRectSizes.x/2),exampleNameAreaCordinates.y-(exampleNameAreaRectSizes.y/2), exampleNameAreaRectSizes.x, exampleNameAreaRectSizes.y); 
+    ctx.fillStyle = '#ddffddaa';
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.font = 'italic '+exampleNameFontSize+'pt Calibri';
+    ctx.fillText(ExampleName,exampleNameAreaCordinates.x-(exampleNameAreaRectSizes.x/2)+4,exampleNameAreaCordinates.y+(exampleNameFontSize/2));
+    ctx.stroke();
+}
+
+async function drawInputOutputInformation(){
+    //console.log("it is working draw input output information");
+    // input area
+    ctx.beginPath();
+    ctx.rect(inputCordinates.x-(iORectSize/2),inputCordinates.y-(iORectSize/2), iORectSize, iORectSize);
+     // output area
+    ctx.rect(outputCordinates.x-(iORectSize/2),outputCordinates.y-(iORectSize/2), iORectSize, iORectSize); 
+    ctx.fillStyle = '#ddffddaa';
+    ctx.fill();
+    ctx.stroke();
+}
+
+async function calculateCordinatesValues(){
+    //networkWidth=520;
+    let distance=networkWidth/(networkList.length-1);//120
+    distanceX = distance;
+    distanceY = distance;
+    circleSize = distance/3;
 }
 
 async function calculateCirclesCordinates()
