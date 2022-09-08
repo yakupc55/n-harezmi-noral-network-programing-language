@@ -46,18 +46,37 @@ let currentVersion="";
 let currentNeuralNetwork="";
 let tempData="";
 
-
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
     firstDraws();
+    closeAllNetworkButton();
 }
 
 function onChangeExampleValue() {
     let selectedExample = document.getElementById("example").value;
     console.log(selectedExample);
     getTextDataFromUrlToTextarea(selectedExample+".lang","codes");
+    closeAllNetworkButton();
     //alert(d);
 }
+
+function closeAllNetworkButton(){
+    changeButtonSituation("start-network",true);
+    changeButtonSituation("next-step",true);
+    changeButtonSituation("stop-network",true);
+}
+
+function changeButtonSituation(buttonName,buttonSituation){
+  document.getElementById(buttonName).disabled = buttonSituation;
+}
+
+async function startNetworkSystem(){
+    console.log("first step is success");
+
+    // give a test input 
+    inputData=2;
+}
+
 async function firstDraws(){
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, fieldW, fieldH);  
@@ -67,6 +86,7 @@ async function firstDraws(){
     await codeTest();
     await firstDraws();
     await parserCodes();
+    changeButtonSituation("start-network",false);
 }
 
 async function drawNeuralNetwork(){
