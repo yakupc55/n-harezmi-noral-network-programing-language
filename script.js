@@ -29,6 +29,9 @@ let distanceX = 160;
 let distanceY = 160;
 let circleSize = 60;
 
+let inputData=0;
+let ouptutData=0;
+
 let iORectSize = 60;
 let inputCordinates = {x:(iORectSize/2),y:centerY};
 let outputCordinates = {x:fieldW-(iORectSize/2),y:centerY};
@@ -298,6 +301,15 @@ async function drawPathLines() {
             ctx.lineTo(networkSimpleList[lineToindex].x,networkSimpleList[lineToindex].y);
         }
     }
+
+    //draw input line
+    ctx.moveTo(inputCordinates.x+(iORectSize/2),inputCordinates.y);
+    ctx.lineTo(networkSimpleList[0].x,networkSimpleList[0].y);
+
+    //draw output line
+    ctx.moveTo(outputCordinates.x-(iORectSize/2),outputCordinates.y);
+    ctx.lineTo(networkSimpleList[networkSimpleList.length-1].x,networkSimpleList[networkSimpleList.length-1].y);
+
     ctx.stroke();
 }
 
@@ -335,15 +347,16 @@ async function drawCurrentDataArea(){
     ctx.font = 'italic '+currentDataFontSize+'pt Calibri';
     let text="Data";
     let textWidth=ctx.measureText(text).width;
-    ctx.fillText("Data",currentDataAreaCordinates.x-(textWidth/2),currentDataAreaCordinates.y-currentDataFontSize);
+    ctx.fillText(text,currentDataAreaCordinates.x-(textWidth/2),currentDataAreaCordinates.y-currentDataFontSize);
     ctx.fillText(currentData,currentDataAreaCordinates.x-10,currentDataAreaCordinates.y+5);
     ctx.stroke();
 }
 
 async function drawExampleNameArea(){
     let exampleNameFontSize=18;
+    let r = calculateRectFromCenterCordinatesObject(exampleNameAreaCordinates,exampleNameAreaRectSizes);
     ctx.beginPath();
-    ctx.rect(exampleNameAreaCordinates.x-(exampleNameAreaRectSizes.x/2),exampleNameAreaCordinates.y-(exampleNameAreaRectSizes.y/2), exampleNameAreaRectSizes.x, exampleNameAreaRectSizes.y); 
+    ctx.rect(r.x,r.y,r.w,r.h); 
     ctx.fillStyle = '#ddffddaa';
     ctx.fill();
     ctx.stroke();
@@ -351,7 +364,9 @@ async function drawExampleNameArea(){
     ctx.beginPath();
     ctx.fillStyle = 'black';
     ctx.font = 'italic '+exampleNameFontSize+'pt Calibri';
-    ctx.fillText(ExampleName,exampleNameAreaCordinates.x-(exampleNameAreaRectSizes.x/2)+4,exampleNameAreaCordinates.y+(exampleNameFontSize/2));
+    let text=ExampleName;
+    let textWidth=ctx.measureText(text).width;
+    ctx.fillText(text,exampleNameAreaCordinates.x-(textWidth/2),exampleNameAreaCordinates.y+(exampleNameFontSize/2));
     ctx.stroke();
 }
 
@@ -364,6 +379,20 @@ async function drawInputOutputInformation(){
     ctx.rect(outputCordinates.x-(iORectSize/2),outputCordinates.y-(iORectSize/2), iORectSize, iORectSize); 
     ctx.fillStyle = '#ddffddaa';
     ctx.fill();
+    ctx.stroke();
+
+    let ioFontSize=15;
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.font = 'italic '+ioFontSize+'pt Calibri';
+    let text="input";
+    let textWidth=ctx.measureText(text).width;
+    ctx.fillText(text,inputCordinates.x-(textWidth/2),inputCordinates.y-ioFontSize);
+    ctx.fillText(inputData,inputCordinates.x-10,inputCordinates.y+12);
+    text="output";
+    textWidth=ctx.measureText(text).width;
+    ctx.fillText(text,outputCordinates.x-(textWidth/2),outputCordinates.y-ioFontSize);
+    ctx.fillText(inputData,outputCordinates.x-10,outputCordinates.y+12);
     ctx.stroke();
 }
 
