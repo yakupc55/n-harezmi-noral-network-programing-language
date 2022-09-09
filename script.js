@@ -46,6 +46,7 @@ let currentVersion="";
 let currentNeuralNetwork="";
 let tempData="";
 
+let currentWorkingNoron=-1;
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
     firstDraws();
@@ -76,11 +77,32 @@ function changeButtonSituation(buttonName,buttonSituation){
 }
 
 async function startNetworkSystem(){
-    console.log("first step is success");
     //open buttons
     openNetworkButtonsWithStarts();
+    doTheProcessOfNoron(currentWorkingNoron);
     // give a test input 
     inputData=2;
+}
+
+async function doTheProcessOfNoron(noronNo){
+    if(noronNo>-1){
+        //for noron process
+    }
+    // for input output process
+    else{
+        switch (noronNo){
+            case -1: nsworkwithInputPath(); break;
+            case -2: nsworkwithOutputPath(); break;
+            default: alert("This is not a special noron");
+        }
+    }
+}
+
+async function nsworkwithInputPath(){
+    console.log("you working with input path");
+}
+async function nsworkwithOutputPath(){
+    console.log("you working with output path");
 }
 
 async function firstDraws(){
@@ -177,9 +199,9 @@ async function updateDateSetFromExample() {
         codeCount++;
     }
 
-    console.log("update date set from example :");
-    console.log("networkSimpleList");
-    console.log(networkSimpleList);
+    // console.log("update date set from example :");
+    // console.log("networkSimpleList");
+    // console.log(networkSimpleList);
 }
 
 async function snMinV1NetworkProcess(){
