@@ -66,13 +66,19 @@ function closeAllNetworkButton(){
     changeButtonSituation("stop-network",true);
 }
 
+function openNetworkButtonsWithStarts(){
+    changeButtonSituation("next-step",false);
+    changeButtonSituation("stop-network",false);
+}
+
 function changeButtonSituation(buttonName,buttonSituation){
   document.getElementById(buttonName).disabled = buttonSituation;
 }
 
 async function startNetworkSystem(){
     console.log("first step is success");
-
+    //open buttons
+    openNetworkButtonsWithStarts();
     // give a test input 
     inputData=2;
 }
@@ -316,9 +322,12 @@ async function drawPathLines() {
     let lineToindex=0; 
     for (let i = 0; i < networkSimpleList.length; i++) {
         for (let p = 0; p < networkSimpleList[i].paths.length; p++) {
-            ctx.moveTo(networkSimpleList[i].x,networkSimpleList[i].y);
             lineToindex = networkSimpleList[i].paths[p];
-            ctx.lineTo(networkSimpleList[lineToindex].x,networkSimpleList[lineToindex].y);
+            //control for input or output paths
+            if(lineToindex>-1){
+                ctx.moveTo(networkSimpleList[i].x,networkSimpleList[i].y);
+                ctx.lineTo(networkSimpleList[lineToindex].x,networkSimpleList[lineToindex].y);
+            }
         }
     }
 
@@ -513,6 +522,10 @@ function addPathstoANoron(i,j){
     }
 }
 
+function addPathFromLastNoronToOutput(){
+    let index=networkList.length-1;
+    networkList[index][0].paths.push(-2);
+}
 async function givePathsToNorons(){
     for (let i = 0; i < networkList.length; i++) {
         for (let j = 0; j < networkList[i].length; j++) {
@@ -520,9 +533,11 @@ async function givePathsToNorons(){
             addPathstoANoron(i,j);
         }
     }
-    // console.log("give paths to noron");
-    // console.log("networkList");
-    // console.log(networkList);
+    //add paths from last noron to output
+    addPathFromLastNoronToOutput();
+    console.log("give paths to noron");
+    console.log("networkList");
+    console.log(networkList);
 }
 
 async function drawNetworkCircles(){
