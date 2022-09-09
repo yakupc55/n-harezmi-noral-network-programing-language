@@ -30,7 +30,7 @@ let distanceY = 160;
 let circleSize = 60;
 
 let inputData=0;
-let ouptutData=0;
+let outputData=0;
 
 let iORectSize = 60;
 let inputCordinates = {x:(iORectSize/2),y:centerY};
@@ -47,6 +47,10 @@ let currentNeuralNetwork="";
 let tempData="";
 
 let currentWorkingNoron=-1;
+
+let orginalStrokeColor= "black";
+let colorCurrentNoron="red";
+let colorNextNoron="yellow";
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
     firstDraws();
@@ -82,6 +86,10 @@ async function startNetworkSystem(){
     doTheProcessOfNoron(currentWorkingNoron);
     // give a test input 
     inputData=2;
+
+    
+    //close start network button
+    changeButtonSituation("start-network",true);
 }
 
 async function doTheProcessOfNoron(noronNo){
@@ -98,8 +106,60 @@ async function doTheProcessOfNoron(noronNo){
     }
 }
 
+async function drawWorkingNoron(noronNo,circleFillStyle){
+    ctx.beginPath();
+    ctx.arc(networkSimpleList[noronNo].x,networkSimpleList[noronNo].y , circleSize, 0, 2 * Math.PI);
+    ctx.fillStyle = circleFillStyle;
+    ctx.fill();
+    ctx.stroke();
+
+    //data set in a noron
+    ctx.beginPath();
+    let fontSize=circleSize/4;
+    let fontSpace=4;
+    let startX=0-(circleSize/2);
+    ctx.fillStyle = 'black';
+
+    ctx.font = 'italic '+fontSize+'pt Calibri';
+        
+        for (let data = 0; data < dataSize; data++) {
+            ctx.fillText(networkSimpleList[noronNo].dataSet[data], networkSimpleList[noronNo].x+startX, networkSimpleList[noronNo].y+(startX-fontSpace)+(data*(fontSize+fontSpace)));
+        }
+    ctx.stroke();
+}
+
+async function drawWorkingPath(noron1,noron2,strokeColor){
+    ctx.strokeStyle = strokeColor;
+    ctx.beginPath();
+    ctx.moveTo(inputCordinates.x+(iORectSize/2),inputCordinates.y);
+    ctx.lineTo(networkSimpleList[0].x,networkSimpleList[0].y);
+    if(noron1<0){
+        switch(noron1){
+            case -1: ctx.moveTo(inputCordinates.x+(iORectSize/2),inputCordinates.y); break;
+            case -2: ctx.moveTo(outputCordinates.x-(iORectSize/2),outputCordinates.y); break;
+        }
+    }
+    else{
+        ctx.moveTo(networkSimpleList[noron1].x,networkSimpleList[noron1].y);
+    }
+
+    if(noron2<0){
+        switch(noron2){
+            case -1: ctx.lineTo(inputCordinates.x+(iORectSize/2),inputCordinates.y); break;
+            case -2: ctx.lineTo(outputCordinates.x-(iORectSize/2),outputCordinates.y); break;
+        }
+    }
+    else{
+        ctx.lineTo(networkSimpleList[noron2].x,networkSimpleList[noron2].y);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = orginalStrokeColor;
+}
 async function nsworkwithInputPath(){
     console.log("you working with input path");
+    await drawInputInformation(colorCurrentNoron);
+    await drawWorkingPath(-1,0,colorCurrentNoron);
+    drawWorkingNoron(0,colorNextNoron);
 }
 async function nsworkwithOutputPath(){
     console.log("you working with output path");
@@ -110,7 +170,7 @@ async function firstDraws(){
     ctx.fillRect(0, 0, fieldW, fieldH);  
 }
 
- async function createNetwork(){
+async function createNetwork(){
     await codeTest();
     await firstDraws();
     await parserCodes();
@@ -261,7 +321,6 @@ function nsLangv1Version(){
         alert(message);
     }
 }
-
 
 function nsLangVersion() {
     switch (currentVersion){
@@ -421,30 +480,38 @@ async function drawExampleNameArea(){
     ctx.stroke();
 }
 
-async function drawInputOutputInformation(){
-    //console.log("it is working draw input output information");
-    // input area
+async function drawInputInformation(rectFillStyle){
+    await drawRectSizeAndCordinates(inputCordinates,iORectSize,rectFillStyle);
+    drawTextAndDataInRect(inputCordinates,"input",inputData,"black",15);
+}
+
+async function draOutputInformation(rectFillStyle){
+    await drawRectSizeAndCordinates(outputCordinates,iORectSize,rectFillStyle);
+    drawTextAndDataInRect(outputCordinates,"output",outputData,"black",15);
+}
+
+async function drawRectSizeAndCordinates(rectCordinates,rectSize,rectFillStyle){
     ctx.beginPath();
-    ctx.rect(inputCordinates.x-(iORectSize/2),inputCordinates.y-(iORectSize/2), iORectSize, iORectSize);
-     // output area
-    ctx.rect(outputCordinates.x-(iORectSize/2),outputCordinates.y-(iORectSize/2), iORectSize, iORectSize); 
-    ctx.fillStyle = '#ddffddaa';
+    ctx.rect(rectCordinates.x-(rectSize/2),rectCordinates.y-(rectSize/2), rectSize, rectSize);
+    ctx.fillStyle = rectFillStyle;
     ctx.fill();
     ctx.stroke();
+}
 
-    let ioFontSize=15;
+async function drawTextAndDataInRect(rectCordinates,text,data,textColor,textFontSize){
     ctx.beginPath();
-    ctx.fillStyle = 'black';
-    ctx.font = 'italic '+ioFontSize+'pt Calibri';
-    let text="input";
+    ctx.fillStyle = textColor;
+    ctx.font = 'italic '+textFontSize+'pt Calibri';
     let textWidth=ctx.measureText(text).width;
-    ctx.fillText(text,inputCordinates.x-(textWidth/2),inputCordinates.y-ioFontSize);
-    ctx.fillText(inputData,inputCordinates.x-10,inputCordinates.y+12);
-    text="output";
-    textWidth=ctx.measureText(text).width;
-    ctx.fillText(text,outputCordinates.x-(textWidth/2),outputCordinates.y-ioFontSize);
-    ctx.fillText(inputData,outputCordinates.x-10,outputCordinates.y+12);
+    ctx.fillText(text,rectCordinates.x-(textWidth/2),rectCordinates.y-textFontSize);
+    ctx.fillText(data,rectCordinates.x-10,rectCordinates.y+12);
     ctx.stroke();
+}
+async function drawInputOutputInformation(){
+    //input area
+    drawInputInformation('#ddffddaa');
+    //output area
+    draOutputInformation('#ddffddaa');
 }
 
 async function calculateCordinatesValues(){
