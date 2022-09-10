@@ -80,21 +80,46 @@ function changeButtonSituation(buttonName,buttonSituation){
   document.getElementById(buttonName).disabled = buttonSituation;
 }
 
+async function nextStepNetworkSystem(){
+    doTheProcessOfNoron(currentWorkingNoron);
+}
+
+async function stopNetworkSystem(){
+    firstDraws();
+    closeAllNetworkButton();
+}
+
 async function startNetworkSystem(){
+    //close start network button
+    changeButtonSituation("start-network",true);
     //open buttons
     openNetworkButtonsWithStarts();
     doTheProcessOfNoron(currentWorkingNoron);
     // give a test input 
     inputData=2;
-
-    
-    //close start network button
-    changeButtonSituation("start-network",true);
+    currentData=inputData;
+    drawCurrentDataAreaWithProperties("Data",18,'green');
+}
+async function snNetworkProcessSender(noronNo){
+    console.log("this is working perfectly");
 }
 
 async function doTheProcessOfNoron(noronNo){
     if(noronNo>-1){
         //for noron process
+        let getProcessCode = networkSimpleList[noronNo].dataSet[0];
+        console.log("do the prcess of noron:");
+        console.log("noron no : "+noronNo+" get process code : "+getProcessCode+" type of getprocess code : "+typeof(getProcessCode));
+        switch (getProcessCode) {
+            //sender
+            case 0: snNetworkProcessSender(noronNo);
+                
+                break;
+        
+            default:
+                alert("this is not a special code");
+                break;
+        }
     }
     // for input output process
     else{
@@ -160,14 +185,19 @@ async function nsworkwithInputPath(){
     await drawInputInformation(colorCurrentNoron);
     await drawWorkingPath(-1,0,colorCurrentNoron);
     drawWorkingNoron(0,colorNextNoron);
+
+    //change current working with first noron
+    currentWorkingNoron=0;
 }
 async function nsworkwithOutputPath(){
     console.log("you working with output path");
 }
 
 async function firstDraws(){
+    ctx.beginPath();
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, fieldW, fieldH);  
+    ctx.fillRect(0, 0, fieldW, fieldH);
+    ctx.stroke(); 
 }
 
 async function createNetwork(){
@@ -243,6 +273,14 @@ function controlList(name,list){
     return isExist;
 }
 
+async function stringListToIntegerList(stringList){
+    let integerList=[];
+    for (let i = 0; i < stringList.length; i++) {
+      integerList.push(parseInt(stringList[i])); 
+    }
+    return integerList;
+}
+
 async function updateDateSetFromExample() {
     // console.log("update side")
     // console.log("codeCount : "+codeCount);
@@ -254,7 +292,7 @@ async function updateDateSetFromExample() {
     for (let i = 0; i < networkSimpleList.length; i++) {
         miniParser = codeRowList[codeCount].split(",");
         for (let d = 0; d < dataSize; d++) {
-            networkSimpleList[i].dataSet[d] = miniParser[d];
+            networkSimpleList[i].dataSet[d] = parseInt(miniParser[d]);
         }
         codeCount++;
     }
@@ -443,23 +481,24 @@ function calculateRectFromCenterCordinates(rectCenterX,rectCenterY,rectWidth,rec
     return {x:rectCenterX-(rectWidth/2),y:rectCenterY-(rectHeight/2),w:rectWidth,h:rectHeight}
 }
 
-async function drawCurrentDataArea(){
-    let currentDataFontSize=18;
+async function drawCurrentDataAreaWithProperties(text,currentDataFontSize,rectFillStyle){
     let r = calculateRectFromCenterCordinatesObject(currentDataAreaCordinates,currentDataAreaRectSizes);
     ctx.beginPath();
     ctx.rect(r.x,r.y,r.w,r.h); 
-    ctx.fillStyle = '#ddffddaa';
+    ctx.fillStyle = rectFillStyle;
     ctx.fill();
     ctx.stroke();
 
     ctx.beginPath();
     ctx.fillStyle = 'black';
     ctx.font = 'italic '+currentDataFontSize+'pt Calibri';
-    let text="Data";
     let textWidth=ctx.measureText(text).width;
     ctx.fillText(text,currentDataAreaCordinates.x-(textWidth/2),currentDataAreaCordinates.y-currentDataFontSize);
     ctx.fillText(currentData,currentDataAreaCordinates.x-10,currentDataAreaCordinates.y+5);
     ctx.stroke();
+}
+async function drawCurrentDataArea(){
+    drawCurrentDataAreaWithProperties("Data",18,'#ddffddaa');
 }
 
 async function drawExampleNameArea(){
