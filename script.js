@@ -139,7 +139,7 @@ async function nsDrawGoToNextNoron(firstNoron,secondNoron){
     if(secondNoron>0)
     drawWorkingNoron(secondNoron,colorNextNoron);
     else
-    drawOutputInformation(colorCurrentNoron);
+    drawOutputInformation(colorNextNoron);
 }
 
 async function nsNetworkProcessSender(noronNo){
@@ -245,7 +245,16 @@ async function nsworkwithInputPath(){
     previousWorkingNoron=-1;
 }
 async function nsworkwithOutputPath(){
+    outputData=currentData;
     console.log("you working with output path");
+    //change previous draws
+    let lastNoron= networkSimpleList.length-1;
+    await nsEditDrawPreviousPath(lastNoron,-2);
+    await nsEditDrawPreviousStep(lastNoron);
+    drawOutputInformation(colorCurrentNoron);
+    //close next-step button
+    changeButtonSituation("next-step",true);
+
 }
 
 async function firstDraws(){
