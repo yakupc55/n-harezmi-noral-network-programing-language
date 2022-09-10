@@ -54,6 +54,7 @@ let previousWorkingNoron=-1;
 let orginalStrokeColor= "black";
 let colorCurrentNoron="red";
 let colorNextNoron="yellow";
+
 window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
     firstDraws();
@@ -98,11 +99,20 @@ async function startNetworkSystem(){
     changeButtonSituation("start-network",true);
     //open buttons
     openNetworkButtonsWithStarts();
+
+    //reset something
+    resetDatasForStartNetwork()
+
+    //start processing
     doTheProcessOfNoron(currentWorkingNoron);
     // give a test input 
     inputData=2;
     currentData=inputData;
-    drawCurrentDataAreaWithProperties("Data",18,'green');
+    
+}
+
+async function resetDatasForStartNetwork(){
+    currentWorkingNoron=-1
 }
 
 async function nsEditDrawPreviousStep(noronNo){
@@ -155,7 +165,27 @@ async function nsNetworkProcessSender(noronNo){
     }
 }
 
+async function nsNetworkMathProcess(noronNo){
+    console.log("math process is working");
+}
+
+async function nsNetworkLogicalProcess(noronNo){
+    console.log("logical process is working");
+    let TypeOfProcess=networkSimpleList[noronNo].dataSet[1];
+    let logicalData =networkSimpleList[noronNo].dataSet[4];
+    let ifPath = networkSimpleList[noronNo].dataSet[2];
+    let elsePath = networkSimpleList[noronNo].dataSet[3];
+    let logicValue;
+    switch (TypeOfProcess) {
+        // equals
+        case 0: logicValue= (currentData==logicalData); console.log("equals working"); break;
+    
+        default: alert("type of process is not available"); break;
+    }
+}
+
 async function doTheProcessOfNoron(noronNo){
+    drawCurrentDataAreaWithProperties("Data",18,'green');
     if(noronNo>-1){
         //for noron process
         let getProcessCode = networkSimpleList[noronNo].dataSet[0];
@@ -163,10 +193,11 @@ async function doTheProcessOfNoron(noronNo){
         console.log("noron no : "+noronNo+" get process code : "+getProcessCode+" type of getprocess code : "+typeof(getProcessCode));
         switch (getProcessCode) {
             //sender
-            case 0: nsNetworkProcessSender(noronNo);
-                
-                break;
-        
+            case 0: nsNetworkProcessSender(noronNo); break;
+            // math process
+            case 1: nsNetworkMathProcess(noronNo); break;
+            //logical process
+            case 2: nsNetworkLogicalProcess(noronNo); break;
             default:
                 alert("this is not a special code");
                 break;
@@ -265,6 +296,7 @@ async function firstDraws(){
 }
 
 async function createNetwork(){
+    closeAllNetworkButton();
     await codeTest();
     await firstDraws();
     await parserCodes();
