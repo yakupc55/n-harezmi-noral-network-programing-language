@@ -1,6 +1,7 @@
 
 let c = document.getElementById("myCanvas");
 let ctx = c.getContext("2d");
+ctx.globalAlpha=1;
 let fieldW=c.width;
 let fieldH=c.height;
 
@@ -32,6 +33,7 @@ let circleSize = 60;
 let inputData=0;
 let outputData=0;
 
+let ioRectOrginalFillStyle="#ddffddaa";
 let iORectSize = 60;
 let inputCordinates = {x:(iORectSize/2),y:centerY};
 let outputCordinates = {x:fieldW-(iORectSize/2),y:centerY};
@@ -46,8 +48,9 @@ let currentVersion="";
 let currentNeuralNetwork="";
 let tempData="";
 
+let orginalNoronFillStyleColor="white";
 let currentWorkingNoron=-1;
-
+let previousWorkingNoron=-1;
 let orginalStrokeColor= "black";
 let colorCurrentNoron="red";
 let colorNextNoron="yellow";
@@ -62,6 +65,7 @@ function onChangeExampleValue() {
     console.log(selectedExample);
     getTextDataFromUrlToTextarea(selectedExample+".lang","codes");
     closeAllNetworkButton();
+    firstDraws();
     //alert(d);
 }
 
@@ -100,8 +104,55 @@ async function startNetworkSystem(){
     currentData=inputData;
     drawCurrentDataAreaWithProperties("Data",18,'green');
 }
-async function snNetworkProcessSender(noronNo){
-    console.log("this is working perfectly");
+
+async function nsEditDrawPreviousStep(noronNo){
+    console.log("edit draw previous step noron no : "+noronNo);
+    if(noronNo<0)
+    {
+        switch (noronNo) {
+            case -1: drawInputInformation(ioRectOrginalFillStyle); break;
+            case -2: drawOutputInformation(ioRectOrginalFillStyle); break;
+        
+            default:  break;
+        }
+    }
+    else{
+        drawWorkingNoron(noronNo,orginalNoronFillStyleColor);
+    }
+}
+
+async function nsEditDrawPreviousPath(previousNoron,currentNoron){
+    ctx.lineWidth =3 ;
+    await drawWorkingPath(previousNoron,currentNoron,'white');
+    ctx.lineWidth =1 ;
+    drawWorkingPath(previousNoron,currentNoron,"green");
+}
+
+async function nsDrawGoToNextNoron(firstNoron,secondNoron){
+    //change previous draws
+    await nsEditDrawPreviousPath(previousWorkingNoron,firstNoron);
+    await nsEditDrawPreviousStep(previousWorkingNoron);
+    //change previous noron with new noron
+    previousWorkingNoron=firstNoron;
+    await drawWorkingPath(firstNoron,secondNoron,colorCurrentNoron);
+    await drawWorkingNoron(firstNoron,colorCurrentNoron);
+    if(secondNoron>0)
+    drawWorkingNoron(secondNoron,colorNextNoron);
+    else
+    drawOutputInformation(colorCurrentNoron);
+}
+
+async function nsNetworkProcessSender(noronNo){
+    // console.log("this is working perfectly");
+    let getTypeOfProcess=networkSimpleList[noronNo].dataSet[1];
+    if(getTypeOfProcess>-1 && getTypeOfProcess<3){
+      let useDataSet=getTypeOfProcess+2;
+      let pathAddress = networkSimpleList[noronNo].dataSet[useDataSet];
+      currentWorkingNoron=networkSimpleList[noronNo].paths[pathAddress];
+      nsDrawGoToNextNoron(noronNo,currentWorkingNoron);
+    }else{
+        alert("type of process is not available");
+    }
 }
 
 async function doTheProcessOfNoron(noronNo){
@@ -112,7 +163,7 @@ async function doTheProcessOfNoron(noronNo){
         console.log("noron no : "+noronNo+" get process code : "+getProcessCode+" type of getprocess code : "+typeof(getProcessCode));
         switch (getProcessCode) {
             //sender
-            case 0: snNetworkProcessSender(noronNo);
+            case 0: nsNetworkProcessSender(noronNo);
                 
                 break;
         
@@ -154,10 +205,9 @@ async function drawWorkingNoron(noronNo,circleFillStyle){
 }
 
 async function drawWorkingPath(noron1,noron2,strokeColor){
-    ctx.strokeStyle = strokeColor;
     ctx.beginPath();
-    ctx.moveTo(inputCordinates.x+(iORectSize/2),inputCordinates.y);
-    ctx.lineTo(networkSimpleList[0].x,networkSimpleList[0].y);
+    ctx.fillStyle=strokeColor;
+    ctx.strokeStyle = strokeColor;
     if(noron1<0){
         switch(noron1){
             case -1: ctx.moveTo(inputCordinates.x+(iORectSize/2),inputCordinates.y); break;
@@ -177,6 +227,8 @@ async function drawWorkingPath(noron1,noron2,strokeColor){
     else{
         ctx.lineTo(networkSimpleList[noron2].x,networkSimpleList[noron2].y);
     }
+  
+    ctx.fill();
     ctx.stroke();
     ctx.strokeStyle = orginalStrokeColor;
 }
@@ -188,6 +240,9 @@ async function nsworkwithInputPath(){
 
     //change current working with first noron
     currentWorkingNoron=0;
+    
+    //change previous working noron
+    previousWorkingNoron=-1;
 }
 async function nsworkwithOutputPath(){
     console.log("you working with output path");
@@ -302,20 +357,20 @@ async function updateDateSetFromExample() {
     // console.log(networkSimpleList);
 }
 
-async function snMinV1NetworkProcess(){
+async function nsMinV1NetworkProcess(){
     await calculateAndCreateNetwork();
     await updateDateSetFromExample();
     await drawNeuralNetwork();
 }
 
-function snMinV1NetworkSize(size){
+function nsMinV1NetworkSize(size){
     // console.log("before changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
-    // console.log("sn min v1 network size size : ");
+    // console.log("ns min v1 network size size : ");
     // console.log(size);
     if(size<=maxNetworkSize && size>=minNetworkSize){
         networkSize=size;
         networkListSize=(size*2)+1;
-        snMinV1NetworkProcess();
+        nsMinV1NetworkProcess();
         // console.log("later changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
     }
     else{
@@ -328,7 +383,7 @@ function nsTypeOfMinV1() {
     let size=codeRowList[codeCount];
     if(Number.isInteger(parseInt(size))){
         codeCount++;
-        snMinV1NetworkSize(parseInt(size));
+        nsMinV1NetworkSize(parseInt(size));
     }else{
         alert("Network Size is not integer");
     }
@@ -520,16 +575,18 @@ async function drawExampleNameArea(){
 }
 
 async function drawInputInformation(rectFillStyle){
+    await drawRectSizeAndCordinates(inputCordinates,iORectSize,'white');
     await drawRectSizeAndCordinates(inputCordinates,iORectSize,rectFillStyle);
     drawTextAndDataInRect(inputCordinates,"input",inputData,"black",15);
 }
 
-async function draOutputInformation(rectFillStyle){
+async function drawOutputInformation(rectFillStyle){
     await drawRectSizeAndCordinates(outputCordinates,iORectSize,rectFillStyle);
     drawTextAndDataInRect(outputCordinates,"output",outputData,"black",15);
 }
 
 async function drawRectSizeAndCordinates(rectCordinates,rectSize,rectFillStyle){
+    
     ctx.beginPath();
     ctx.rect(rectCordinates.x-(rectSize/2),rectCordinates.y-(rectSize/2), rectSize, rectSize);
     ctx.fillStyle = rectFillStyle;
@@ -550,7 +607,7 @@ async function drawInputOutputInformation(){
     //input area
     drawInputInformation('#ddffddaa');
     //output area
-    draOutputInformation('#ddffddaa');
+    drawOutputInformation('#ddffddaa');
 }
 
 async function calculateCordinatesValues(){
@@ -631,12 +688,7 @@ function addPathstoANoron(i,j){
         // console.log("it has a previous row value");
         addPathstoNoronByRow(i,j,-1)
     }
-    //check next row 
-    if(isExistInIndex(i+1,0)){
-        // console.log("it has a next row value");
-        addPathstoNoronByRow(i,j,+1)
-    }
-
+    
     //check previous index
     if(isExistInIndex(i,j-1))
     {
@@ -647,6 +699,12 @@ function addPathstoANoron(i,j){
     if(isExistInIndex(i,j+1)){
         networkList[i][j].paths.push(networkList[i][j+1].index);
         // console.log("it has a next value");
+    }
+    
+    //check next row 
+    if(isExistInIndex(i+1,0)){
+        // console.log("it has a next row value");
+        addPathstoNoronByRow(i,j,+1)
     }
 }
 
