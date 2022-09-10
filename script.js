@@ -59,6 +59,7 @@ window.onload = function(e){
     getTextDataFromUrlToTextarea("example1.lang","codes");
     firstDraws();
     closeAllNetworkButton();
+    codeTest2();
 }
 
 function onChangeExampleValue() {
@@ -95,19 +96,25 @@ async function stopNetworkSystem(){
 }
 
 async function startNetworkSystem(){
-    //close start network button
-    changeButtonSituation("start-network",true);
-    //open buttons
-    openNetworkButtonsWithStarts();
+    let inputValue = document.getElementById("input-value").value;
+    if(inputValue.length>0){
+        inputData=parseInt(inputValue);      
+        currentData=inputData;
+        //close start network button
+        changeButtonSituation("start-network",true);
+        //open buttons
+        openNetworkButtonsWithStarts();
 
-    //reset something
-    resetDatasForStartNetwork()
+        //reset something
+        resetDatasForStartNetwork()
 
-    //start processing
-    doTheProcessOfNoron(currentWorkingNoron);
-    // give a test input 
-    inputData=2;
-    currentData=inputData;
+        //start processing
+        doTheProcessOfNoron(currentWorkingNoron);
+        // give a test input 
+    }
+    else{
+        alert("please enter an input number");
+    }
     
 }
 
@@ -167,25 +174,68 @@ async function nsNetworkProcessSender(noronNo){
 
 async function nsNetworkMathProcess(noronNo){
     console.log("math process is working");
+    let TypeOfProcess=networkSimpleList[noronNo].dataSet[1];
+    let mathData =networkSimpleList[noronNo].dataSet[4];
+    let pathAddress = networkSimpleList[noronNo].dataSet[2];
+    let processResult=0;
+    switch (TypeOfProcess) {
+        // +
+        case 0: processResult= currentData+mathData; break;
+        // -
+        case 1: processResult= currentData-mathData; break;
+        // /
+        case 2: processResult= currentData/mathData; break;
+        // *
+        case 3: processResult= currentData * mathData; break;
+        // %
+        case 4: processResult= currentData%mathData; break;
+        default: alert("type of process is not available"); break;
+    }
+    currentData=processResult;
+    console.log("math data : "+ mathData);
+    console.log("type of process : "+ TypeOfProcess);
+    console.log("process resull : "+processResult);
+    console.log("current data : "+currentData);
+    currentWorkingNoron=networkSimpleList[noronNo].paths[pathAddress];
+    nsDrawGoToNextNoron(noronNo,currentWorkingNoron);
 }
 
 async function nsNetworkLogicalProcess(noronNo){
-    console.log("logical process is working");
+    // console.log("logical process is working");
     let TypeOfProcess=networkSimpleList[noronNo].dataSet[1];
     let logicalData =networkSimpleList[noronNo].dataSet[4];
     let ifPath = networkSimpleList[noronNo].dataSet[2];
     let elsePath = networkSimpleList[noronNo].dataSet[3];
-    let logicValue;
+    let logicalValue=true;
+    // console.log("type of process : "+ TypeOfProcess);
+    // console.log("logical data : "+logicalData);
     switch (TypeOfProcess) {
         // equals
-        case 0: logicValue= (currentData==logicalData); console.log("equals working"); break;
+        case 0: logicalValue= (currentData==logicalData); break;
+        // not equals
+        case 1: logicalValue= (currentData!=logicalData); break;
+        // < 
+        case 2: logicalValue= (currentData<logicalData); break;
+        // >
+        case 3: logicalValue= (currentData>logicalData); break;
+        // <=
+        case 4: logicalValue= (currentData<=logicalData); break;
+        // >=
+        case 5: logicalValue= (currentData>=logicalData); break;
     
         default: alert("type of process is not available"); break;
     }
+    // console.log("logical value : "+logicalValue);
+    if(logicalValue){
+        currentWorkingNoron=networkSimpleList[noronNo].paths[ifPath];
+    }else{
+        currentWorkingNoron=networkSimpleList[noronNo].paths[elsePath];
+    }
+    nsDrawGoToNextNoron(noronNo,currentWorkingNoron);
 }
 
 async function doTheProcessOfNoron(noronNo){
-    drawCurrentDataAreaWithProperties("Data",18,'green');
+    
     if(noronNo>-1){
         //for noron process
         let getProcessCode = networkSimpleList[noronNo].dataSet[0];
@@ -211,6 +261,7 @@ async function doTheProcessOfNoron(noronNo){
             default: alert("This is not a special noron");
         }
     }
+    drawCurrentDataAreaWithProperties("Data",18,'green');
 }
 
 async function drawWorkingNoron(noronNo,circleFillStyle){
@@ -298,6 +349,7 @@ async function firstDraws(){
 async function createNetwork(){
     closeAllNetworkButton();
     await codeTest();
+    await codeTest2();
     await firstDraws();
     await parserCodes();
     changeButtonSituation("start-network",false);
@@ -322,8 +374,13 @@ async function calculateAndCreateNetwork(){
     await createEmptyDataSet();
 }
 
-function codeTest2(){
- 
+async function codeTest2(){
+   let inputValue = document.getElementById("input-value").value;
+    console.log("input value : "+inputValue);
+    console.log("type of input value : "+ typeof(inputValue));
+    let getInt= parseInt(inputValue);
+    console.log("getInt : "+getInt);
+    console.log("type of getInt : "+ typeof(getInt));
 }
 
 //for testing some codes
