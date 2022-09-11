@@ -9,8 +9,18 @@ body{
 }
 .nav{
     background-color: aquamarine;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 800;
     height: 40px;
     width: 1100px;
+}
+.nav-small-text{
+    padding-left: 12px;
+    font-size: 18px;
+    font-weight: 600;
 }
 .nav-settings{
     background-color: rgb(160, 241, 9);
@@ -38,5 +48,8 @@ body{
 }
 .footer{
     background-color: aquamarine;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 40px;
 }

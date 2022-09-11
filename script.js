@@ -123,7 +123,7 @@ async function resetDatasForStartNetwork(){
 }
 
 async function nsEditDrawPreviousStep(noronNo){
-    console.log("edit draw previous step noron no : "+noronNo);
+    // console.log("edit draw previous step noron no : "+noronNo);
     if(noronNo<0)
     {
         switch (noronNo) {
@@ -173,7 +173,7 @@ async function nsNetworkProcessSender(noronNo){
 }
 
 async function nsNetworkMathProcess(noronNo){
-    console.log("math process is working");
+    // console.log("math process is working");
     let TypeOfProcess=networkSimpleList[noronNo].dataSet[1];
     let mathData =networkSimpleList[noronNo].dataSet[4];
     let pathAddress = networkSimpleList[noronNo].dataSet[2];
@@ -192,10 +192,10 @@ async function nsNetworkMathProcess(noronNo){
         default: alert("type of process is not available"); break;
     }
     currentData=processResult;
-    console.log("math data : "+ mathData);
-    console.log("type of process : "+ TypeOfProcess);
-    console.log("process resull : "+processResult);
-    console.log("current data : "+currentData);
+    // console.log("math data : "+ mathData);
+    // console.log("type of process : "+ TypeOfProcess);
+    // console.log("process resull : "+processResult);
+    // console.log("current data : "+currentData);
     currentWorkingNoron=networkSimpleList[noronNo].paths[pathAddress];
     nsDrawGoToNextNoron(noronNo,currentWorkingNoron);
 }
@@ -239,8 +239,8 @@ async function doTheProcessOfNoron(noronNo){
     if(noronNo>-1){
         //for noron process
         let getProcessCode = networkSimpleList[noronNo].dataSet[0];
-        console.log("do the prcess of noron:");
-        console.log("noron no : "+noronNo+" get process code : "+getProcessCode+" type of getprocess code : "+typeof(getProcessCode));
+        // console.log("do the prcess of noron:");
+        // console.log("noron no : "+noronNo+" get process code : "+getProcessCode+" type of getprocess code : "+typeof(getProcessCode));
         switch (getProcessCode) {
             //sender
             case 0: nsNetworkProcessSender(noronNo); break;
@@ -315,7 +315,7 @@ async function drawWorkingPath(noron1,noron2,strokeColor){
     ctx.strokeStyle = orginalStrokeColor;
 }
 async function nsworkwithInputPath(){
-    console.log("you working with input path");
+    // console.log("you working with input path");
     await drawInputInformation(colorCurrentNoron);
     await drawWorkingPath(-1,0,colorCurrentNoron);
     drawWorkingNoron(0,colorNextNoron);
@@ -328,7 +328,7 @@ async function nsworkwithInputPath(){
 }
 async function nsworkwithOutputPath(){
     outputData=currentData;
-    console.log("you working with output path");
+   // console.log("you working with output path");
     //change previous draws
     let lastNoron= networkSimpleList.length-1;
     await nsEditDrawPreviousPath(lastNoron,-2);
@@ -348,8 +348,8 @@ async function firstDraws(){
 
 async function createNetwork(){
     closeAllNetworkButton();
-    await codeTest();
-    await codeTest2();
+    // await codeTest();
+    // await codeTest2();
     await firstDraws();
     await parserCodes();
     changeButtonSituation("start-network",false);
@@ -375,12 +375,12 @@ async function calculateAndCreateNetwork(){
 }
 
 async function codeTest2(){
-   let inputValue = document.getElementById("input-value").value;
-    console.log("input value : "+inputValue);
-    console.log("type of input value : "+ typeof(inputValue));
-    let getInt= parseInt(inputValue);
-    console.log("getInt : "+getInt);
-    console.log("type of getInt : "+ typeof(getInt));
+//    let inputValue = document.getElementById("input-value").value;
+//     console.log("input value : "+inputValue);
+//     console.log("type of input value : "+ typeof(inputValue));
+//     let getInt= parseInt(inputValue);
+//     console.log("getInt : "+getInt);
+//     console.log("type of getInt : "+ typeof(getInt));
 }
 
 //for testing some codes
@@ -398,7 +398,6 @@ function getInformation(){
     console.log("get information page end");
     console.log('====================================');
 }
-
 
 async function parserCodes(){
     try {
@@ -435,12 +434,7 @@ async function stringListToIntegerList(stringList){
 }
 
 async function updateDateSetFromExample() {
-    // console.log("update side")
-    // console.log("codeCount : "+codeCount);
-    // console.log("code row list : ");
-    // console.log(codeRowList);
-    // console.log("network simple list : ");
-    // console.log(networkSimpleList);
+
     let miniParser = [];
     for (let i = 0; i < networkSimpleList.length; i++) {
         miniParser = codeRowList[codeCount].split(",");
@@ -449,10 +443,6 @@ async function updateDateSetFromExample() {
         }
         codeCount++;
     }
-
-    // console.log("update date set from example :");
-    // console.log("networkSimpleList");
-    // console.log(networkSimpleList);
 }
 
 async function nsMinV1NetworkProcess(){
@@ -462,9 +452,6 @@ async function nsMinV1NetworkProcess(){
 }
 
 function nsMinV1NetworkSize(size){
-    // console.log("before changed network size : "+networkSize+ " typeof networkSize "+typeof(networkSize));
-    // console.log("ns min v1 network size size : ");
-    // console.log(size);
     if(size<=maxNetworkSize && size>=minNetworkSize){
         networkSize=size;
         networkListSize=(size*2)+1;
@@ -477,7 +464,7 @@ function nsMinV1NetworkSize(size){
 }
 //ns  next step
 function nsTypeOfMinV1() {
-    console.log("everything is succesfull");
+    //console.log("everything is succesfull");
     let size=codeRowList[codeCount];
     if(Number.isInteger(parseInt(size))){
         codeCount++;
@@ -569,9 +556,6 @@ async function createEmptyDataSet() {
     for (let i = 0; i < networkSimpleList.length; i++) {
         networkSimpleList[i].dataSet=[0,0,0,0,0];
     }
-    // console.log("create Empty Data Set :");
-    // console.log("networkSimpleList");
-    // console.log(networkSimpleList);
 }
 
 async function drawDataSetinNoron(){
@@ -621,9 +605,6 @@ async function convertToOneList(){
             networkSimpleList.push(networkList[i][j]);
         }
     }
-    // console.log("convert to one list");
-    // console.log("networkSimpleList");
-    // console.log(networkSimpleList);
 }
 
 function calculateRectFromCenterCordinatesObject(cordinates,sizes){
@@ -728,9 +709,6 @@ async function calculateCirclesCordinates()
             networkList[i][j].x =startNetworkX+( distanceX * i);
         }
     }
-    // console.log("calculate network list");
-    // console.log("networkList");
-    // console.log(networkList);
 }
 
 function isExistInIndex(i,j){
@@ -819,7 +797,7 @@ async function givePathsToNorons(){
     }
     //add paths from last noron to output
     addPathFromLastNoronToOutput();
-    console.log("give paths to noron");
+    //console.log("give paths to noron");
     console.log("networkList");
     console.log(networkList);
 }
@@ -857,8 +835,4 @@ while(sizeCounter>0){
     sizeCounter--;
 }
 networkList[networkListSize-1]=([{x:startNetworkX,y:startNetworkY}]);
-// console.log("create network first list");
-// console.log("networkList");
-// console.log(networkList);
 }
-
