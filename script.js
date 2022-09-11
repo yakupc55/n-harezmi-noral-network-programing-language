@@ -11,7 +11,7 @@ let startNetworkX=145;
 let networkWidth=604;
 let startNetworkY=centerY;
 let networkSize=2;
-let minNetworkSize=2;
+let minNetworkSize=1;
 let maxNetworkSize=6;
 let dataSize=5;
 let networkListSize=(networkSize*2)+1;
@@ -29,6 +29,7 @@ let currentDataAreaCordinates={x:fieldW-(currentDataAreaRectSizes.x/2),y:(curren
 let distanceX = 160;
 let distanceY = 160;
 let circleSize = 60;
+let maxCircleSize=60;
 
 let inputData=0;
 let outputData=0;
@@ -694,7 +695,8 @@ async function calculateCordinatesValues(){
     let distance=networkWidth/(networkList.length-1);//120
     distanceX = distance;
     distanceY = distance;
-    circleSize = distance/3;
+    let calculatedValue = distance/3;
+    circleSize =(calculatedValue>maxCircleSize)?maxCircleSize : calculatedValue ;
 }
 
 async function calculateCirclesCordinates()
